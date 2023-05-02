@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    email: sa
+    url: jdbc:h2:mem:foundry
+    driverClassName: org.h2.Driver
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+
