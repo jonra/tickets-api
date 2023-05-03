@@ -19,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static com.tickets.api.TestHelper.addExtraToEvent;
 import static com.tickets.api.TestHelper.addExtraTicket;
 import static com.tickets.api.TestHelper.createEvent;
 import static com.tickets.api.TestHelper.createExtra;
@@ -97,5 +98,36 @@ import static com.tickets.api.TestHelper.getExtras;
 		assert ticketResponse.getExtras().get(0).getName().equals(extra.getName());
 		assert ticketResponse.getExtras().get(0).getType().equals(extra.getType());
 		assert ticketResponse.getExtras().get(0).getPrice().intValue() == (extra.getPrice()).intValue();
+	}
+
+	@Test
+	void add_extra_to_event() {
+		createTenant(TenantRequest.builder().host("127.0.0.1").name("local").build());
+
+		OrganiserResponse organiser = createOrganiser(OrganiserRequest.builder()
+				.name("test organiser")
+				.type(OrganiserType.ARTIST)
+				.build());
+
+		EventRequest eventRequest = EventRequest.builder()
+				.name("test event")
+				.type(EventType.MUSIC)
+				.build();
+		EventResponse event = createEvent(eventRequest, organiser.getId());
+
+		// Create generic extra linked to organiser
+		ExtraRequest extraRequest = ExtraRequest.builder()
+				.name("test extra")
+				.type(ExtraType.ACCOMMODATION)
+				.price(BigDecimal.valueOf(100.0))
+				.build();
+
+		ExtraResponse extra = createExtra(extraRequest, organiser.getId());
+
+		EventResponse eventResponse = addExtraToEvent(organiser.getId(), event.getId(), extra.getId());
+		assert eventResponse.getExtras().size() == 1;
+		assert eventResponse.getExtras().get(0).getId().equals(extra.getId());
+		assert eventResponse.getExtras().get(0).getName().equals(extra.getName());
+		assert eventResponse.getExtras().get(0).getType().equals(extra.getType());
 	}
 }

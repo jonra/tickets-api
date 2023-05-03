@@ -25,7 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping(ExtraController.PATH)
 @Slf4j
-@Tag(name = "Zone API", description = "The Zone API allows the location administrators add restrictions and define which assets the restrictions are for.")
+@Tag(name = "Extra API", description = "Extra API.")
 public class ExtraController {
 
 	public static final String PATH = "v1/";

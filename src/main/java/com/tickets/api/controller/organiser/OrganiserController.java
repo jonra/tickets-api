@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping(OrganiserController.PATH)
 @Slf4j
-@Tag(name = "Zone API", description = "The Zone API allows the location administrators add restrictions and define which assets the restrictions are for.")
+@Tag(name = "Organiser API", description = "The organiser API for managing organisers.")
 public class OrganiserController {
 
 	public static final String PATH = "v1/organisers";

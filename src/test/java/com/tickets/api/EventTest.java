@@ -39,4 +39,5 @@ import static com.tickets.api.TestHelper.createTenant;
 		assert event.getType().equals(eventRequest.getType());
 	}
 
-	}
+
+}

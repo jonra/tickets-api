@@ -37,16 +37,16 @@ public class TicketService {
 	}
 
 	public TicketResponse getTicket(String ticketId, String tenant) {
-		TicketEntity save = ticketRepository.findByIdAndTenantId(UUID.fromString(ticketId), tenant)
+		TicketEntity ticket = ticketRepository.findByIdAndTenantId(UUID.fromString(ticketId), tenant)
 				.orElseThrow(() -> new EntityNotFoundException("Ticket not found"));
-		return TicketResponse.fromEntity(save);
+		return TicketResponse.fromEntity(ticket);
 	}
 
 	public TicketResponse addExtraToTicket(String tenantId, String organiserId, String eventId, String ticketId, String extraId) {
 		EventEntity event = eventRepository.findByIdAndTenantIdAndOrganiserId(UUID.fromString(eventId), tenantId, UUID.fromString(organiserId))
 				.orElseThrow(() -> new EntityNotFoundException("Event not found"));
 
-		TicketEntity ticket = ticketRepository.findByIdAndTenantId(UUID.fromString(ticketId), tenantId)
+		TicketEntity ticket = ticketRepository.findByIdAndEventIdAndTenantId((UUID.fromString(ticketId)), UUID.fromString(eventId), tenantId)
 				.orElseThrow(() -> new EntityNotFoundException("Ticket not found"));
 
 		ExtraEntity extra = extraRepository.findByIdAndTenantIdAndOrganiserId(UUID.fromString(extraId), tenantId, UUID.fromString(organiserId))

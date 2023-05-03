@@ -8,4 +8,5 @@ import java.util.UUID;
 
 public interface TicketRepository extends JpaRepository<TicketEntity, UUID> {
 	Optional<TicketEntity> findByIdAndTenantId(UUID ticketId, String tenantId);
+	Optional<TicketEntity> findByIdAndEventIdAndTenantId(UUID ticketId, UUID eventId, String tenantId);
 }

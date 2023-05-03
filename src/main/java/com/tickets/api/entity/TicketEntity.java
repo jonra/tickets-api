@@ -32,8 +32,6 @@ public class TicketEntity extends BaseEntity {
 	@ManyToOne
 	private EventEntity event;
 
-
 	@ManyToMany(mappedBy = "tickets", cascade = CascadeType.ALL)
 	private List<ExtraEntity> extras = new ArrayList<>();
-
 }

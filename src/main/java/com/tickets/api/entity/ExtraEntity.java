@@ -14,7 +14,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Builder
@@ -46,4 +48,12 @@ public class ExtraEntity extends BaseEntity {
 			inverseJoinColumns = @JoinColumn(name = "ticket_id")
 	)
 	private Set<TicketEntity> tickets = new HashSet<>();
+
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(
+			name = "event_extra",
+			joinColumns = @JoinColumn(name = "extra_id"),
+			inverseJoinColumns = @JoinColumn(name = "event_id")
+	)
+	private List<EventEntity> events = new ArrayList<>();
 }

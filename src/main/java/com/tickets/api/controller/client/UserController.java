@@ -27,14 +27,14 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequiredArgsConstructor
 @RequestMapping(UserController.PATH)
 @Slf4j
-@Tag(name = "Location API", description = "The Login API allow clients to authenticate.")
+@Tag(name = "User API", description = "The Login API allow clients to authenticate.")
 public class UserController {
 
 	public static final String PATH = "v1/users";
 	private final UserService userService;
 	private final TenantService tenantService;
 
-	@Operation(description = "User service" )
+	@Operation(description = "Create user" )
 	@ApiResponse(responseCode = "200", description = "Authenticated")
 	@PostMapping()
 	public ResponseEntity<UserResponse> createUser(HttpServletRequest request, @Valid @RequestBody UserRequest userRequest) {
@@ -45,7 +45,7 @@ public class UserController {
 		return ok(user);
 	}
 
-	@Operation(description = "User roles" )
+	@Operation(description = "Add user roles" )
 	@ApiResponse(responseCode = "200", description = "Authenticated")
 	@PutMapping("/{userId}/roles")
 	public ResponseEntity<UserResponse> addRolesToUser(HttpServletRequest request, @Valid @RequestBody UserRoleRequest userRequest, @PathVariable String userId) {

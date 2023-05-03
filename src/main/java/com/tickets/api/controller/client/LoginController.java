@@ -21,7 +21,7 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequiredArgsConstructor
 @RequestMapping(LoginController.PATH)
 @Slf4j
-@Tag(name = "Location API", description = "The Login API allow clients to authenticate.")
+@Tag(name = "Login API", description = "The Login API allow clients to authenticate.")
 public class LoginController {
 
 	public static final String PATH = "v1/login";

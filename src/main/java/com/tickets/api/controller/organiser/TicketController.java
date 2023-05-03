@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping(TicketController.PATH)
 @Slf4j
-@Tag(name = "Ticket API", description = "The Zone API allows the location administrators add restrictions and define which assets the restrictions are for.")
+@Tag(name = "Ticket API", description = "Ticket API.")
 public class TicketController {
 
 	public static final String PATH = "/v1/organisers/{organiserId}/events/{eventId}/tickets";

@@ -33,6 +33,17 @@ import static io.restassured.RestAssured.given;
 
 public class TestHelper  {
 
+	public static TenantResponse createTenant(TenantRequest tenantRequest) {
+		return given()
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.body(tenantRequest)
+				.post(TenantController.PATH)
+				.then()
+				.statusCode(200)
+				.extract()
+				.as(TenantResponse.class);
+	}
+
 	public static OrganiserResponse createOrganiser(OrganiserRequest organiserRequest) {
 		return given()
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -59,23 +70,25 @@ public class TestHelper  {
 		return given()
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.body(eventRequest)
-				.post(replacePlaceholders(EventController.PATH + "/organisers/{organiser_id}/events", organiserId))
+				.post(replacePlaceholders(EventController.PATH, organiserId))
 				.then()
 				.statusCode(200)
 				.extract()
 				.as(EventResponse.class);
 	}
 
-	public static TenantResponse createTenant(TenantRequest tenantRequest) {
+	public static EventResponse addExtraToEvent(String organiserId, String eventId, String extraId) {
 		return given()
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.body(tenantRequest)
-				.post(TenantController.PATH)
+				.put(replacePlaceholders(EventController.PATH + "/{eventId}/extras/{extraId}", organiserId, eventId, extraId))
 				.then()
 				.statusCode(200)
 				.extract()
-				.as(TenantResponse.class);
+				.as(EventResponse.class);
 	}
+
+
+
 
 	// Tickets
 	public static TicketResponse createTicket(TicketRequest ticketRequest, String organiserId, String eventId) {

@@ -1,10 +1,12 @@
 package com.tickets.api.entity;
 
 import com.tickets.api.enums.EventType;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
@@ -41,8 +43,8 @@ public class EventEntity extends BaseEntity {
 	@OneToMany(mappedBy = "event")
 	List<TicketEntity> tickets = new ArrayList<>();
 
-//	@OneToMany(mappedBy = "event")
-//	List<ExtraEntity> extras = new ArrayList<>();
+	@ManyToMany(mappedBy = "events", cascade = CascadeType.ALL)
+	private List<ExtraEntity> extras = new ArrayList<>();
 	@ManyToOne
 	private OrganiserEntity organiser;
 }
