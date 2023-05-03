@@ -43,7 +43,9 @@ public class OrganiserEntity extends BaseEntity {
 	@OneToMany(mappedBy = "organiser")
 	List<UserEntity> users = new ArrayList<>();
 
-//	@OneToMany(mappedBy = "organiser")
-//	List<ExtraEntity> extras = new ArrayList<>();
+	@OneToMany(mappedBy = "organiser")
+	List<ExtraEntity> extras = new ArrayList<>();
+
+
 
 }

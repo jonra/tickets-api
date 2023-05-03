@@ -1,10 +1,10 @@
-package com.tickets.api.controller.tenant;
+package com.tickets.api.controller.organiser;
 
-import com.tickets.api.model.OrganiserRequest;
-import com.tickets.api.model.OrganiserResponse;
-import com.tickets.api.model.OrganiserUserRequest;
+import com.tickets.api.model.EventRequest;
+import com.tickets.api.model.EventResponse;
+import com.tickets.api.model.ExtraRequest;
 import com.tickets.api.model.TenantResponse;
-import com.tickets.api.service.OrganiserService;
+import com.tickets.api.service.EventService;
 import com.tickets.api.service.TenantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,41 +23,38 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(OrganiserController.PATH)
+@RequestMapping(EventController.PATH)
 @Slf4j
 @Tag(name = "Zone API", description = "The Zone API allows the location administrators add restrictions and define which assets the restrictions are for.")
-public class OrganiserController {
+public class EventController {
 
-	public static final String PATH = "v1/organisers";
+	public static final String PATH = "v1";
+	private final EventService eventService;
 	private final TenantService tenantService;
-	private final OrganiserService organiserService;
 
-	@Operation(description = "Create a new organiser.")
+	@Operation(description = "Create a new event.")
 	@ApiResponse(responseCode = "200", description = "Event details")
-	@PostMapping()
-	public ResponseEntity<OrganiserResponse> createOrganiser(HttpServletRequest request, @RequestBody OrganiserRequest organiserUserRequest) {
+	@PostMapping("/organisers/{organiserId}/events")
+	public ResponseEntity<EventResponse> createEvent(HttpServletRequest request, @RequestBody EventRequest eventRequest, @PathVariable String organiserId) {
 		String attribute = (String) request.getAttribute("clientHost");
 		TenantResponse tenantResponse = tenantService.getTenant(attribute);
 
-		OrganiserResponse organiser = organiserService.createOrganiser(organiserUserRequest, tenantResponse.getId());
-		// Add current user to organiser
-//		organiserService.addUserToOrganiser(OrganiserUserRequest.builder().userId("").organiserId(organiser.getId()).build(), tenantResponse.getId());
-		return ResponseEntity.ok(organiser);
+		EventResponse event = eventService.createEvent(eventRequest, organiserId, tenantResponse.getId());
+
+		return ResponseEntity.ok(event);
 	}
 
-	@Operation(description = "Add user to organiser.")
+	@Operation(description = "Add extra to event.")
 	@ApiResponse(responseCode = "200", description = "Event details")
-	@PutMapping("/users")
-	public ResponseEntity<OrganiserResponse> addUserToOrganiser(HttpServletRequest request, @Valid @RequestBody OrganiserUserRequest userRequest) {
+	@PutMapping("/{eventId}/extras")
+	public ResponseEntity<EventResponse> addExtraToOrganiser(HttpServletRequest request, @Valid @RequestBody ExtraRequest extraRequest, @PathVariable String eventId) {
 		String attribute = (String) request.getAttribute("clientHost");
 		TenantResponse tenantResponse = tenantService.getTenant(attribute);
 
-		OrganiserResponse organiserResponse = organiserService.addUserToOrganiser(userRequest, tenantResponse.getId());
+		EventResponse eventResponse = eventService.addExtraToEvent(extraRequest, eventId, tenantResponse.getId());
 
-		System.out.println("organiserResponse = " + organiserResponse.getUsers());
-		return ResponseEntity.ok(organiserResponse);
+		return ResponseEntity.ok(eventResponse);
 	}
-
 
 
 }

@@ -41,8 +41,8 @@ public class EventEntity extends BaseEntity {
 	@OneToMany(mappedBy = "event")
 	List<TicketEntity> tickets = new ArrayList<>();
 
-
+//	@OneToMany(mappedBy = "event")
+//	List<ExtraEntity> extras = new ArrayList<>();
 	@ManyToOne
 	private OrganiserEntity organiser;
-
 }

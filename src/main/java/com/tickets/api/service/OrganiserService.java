@@ -6,6 +6,7 @@ import com.tickets.api.exceptions.EntityNotFoundException;
 import com.tickets.api.model.OrganiserRequest;
 import com.tickets.api.model.OrganiserResponse;
 import com.tickets.api.model.OrganiserUserRequest;
+import com.tickets.api.repository.ExtraRepository;
 import com.tickets.api.repository.OrganiserRepository;
 import com.tickets.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import java.util.UUID;
 public class OrganiserService {
 	private final OrganiserRepository organiserRepository;
 	private final UserRepository userRepository;
+	private final ExtraRepository extraRepository;
 
 	public OrganiserResponse createOrganiser(OrganiserRequest deliveryPolygonRequest, String tenant) {
 		OrganiserEntity eventEntity = OrganiserRequest
@@ -48,4 +50,5 @@ public class OrganiserService {
 
 		return getOrganiser(userRequest.getOrganiserId(), tenantId);
 	}
+
 }

@@ -3,19 +3,25 @@ package com.tickets.api;
 import com.tickets.api.controller.admin.CountryController;
 import com.tickets.api.controller.admin.TenantController;
 import com.tickets.api.controller.client.UserController;
-import com.tickets.api.controller.tenant.EventController;
-import com.tickets.api.controller.tenant.OrganiserController;
+import com.tickets.api.controller.organiser.EventController;
+import com.tickets.api.controller.organiser.ExtraController;
+import com.tickets.api.controller.organiser.OrganiserController;
+import com.tickets.api.controller.organiser.TicketController;
 import com.tickets.api.model.CityRequest;
 import com.tickets.api.model.CityResponse;
 import com.tickets.api.model.CountryRequest;
 import com.tickets.api.model.CountryResponse;
 import com.tickets.api.model.EventRequest;
 import com.tickets.api.model.EventResponse;
+import com.tickets.api.model.ExtraRequest;
+import com.tickets.api.model.ExtraResponse;
 import com.tickets.api.model.OrganiserRequest;
 import com.tickets.api.model.OrganiserResponse;
 import com.tickets.api.model.OrganiserUserRequest;
 import com.tickets.api.model.TenantRequest;
 import com.tickets.api.model.TenantResponse;
+import com.tickets.api.model.TicketRequest;
+import com.tickets.api.model.TicketResponse;
 import com.tickets.api.model.UserRequest;
 import com.tickets.api.model.UserResponse;
 import com.tickets.api.model.UserRoleRequest;
@@ -70,6 +76,52 @@ public class TestHelper  {
 				.extract()
 				.as(TenantResponse.class);
 	}
+
+	// Tickets
+	public static TicketResponse createTicket(TicketRequest ticketRequest, String organiserId, String eventId) {
+		return given()
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.body(ticketRequest)
+				.post(replacePlaceholders(TicketController.PATH, organiserId, eventId))
+				.then()
+				.statusCode(200)
+				.extract()
+				.as(TicketResponse.class);
+	}
+
+	public static TicketResponse addExtraTicket(String organiserId, String eventId, String ticketId, String extraId) {
+		return given()
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.put(replacePlaceholders(TicketController.PATH + "/{ticketId}/extras/{extraId}", organiserId, eventId, ticketId, extraId))
+				.then()
+				.statusCode(200)
+				.extract()
+				.as(TicketResponse.class);
+	}
+
+	// Extra
+	public static ExtraResponse createExtra(ExtraRequest extraRequest, String organiserId) {
+		return given()
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.body(extraRequest)
+				.post(replacePlaceholders(ExtraController.PATH + "organisers/{organiserId}/extras", organiserId))
+				.then()
+				.statusCode(200)
+				.extract()
+				.as(ExtraResponse.class);
+	}
+
+	public static List<ExtraResponse> getExtras(String organiserId) {
+		return given()
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.get(replacePlaceholders(ExtraController.PATH + "organisers/{organiserId}/extras", organiserId))
+				.then()
+				.statusCode(200)
+				.extract()
+				.body().jsonPath()
+				.getList("", ExtraResponse.class);
+	}
+
 
 	public static UserResponse createUser(UserRequest userRequest) {
 		return given()
