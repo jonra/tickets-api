@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class AuthenticationService {
+public class AuthService {
 	public LoginResponse login(LoginRequest loginRequest) {
 		List<User> users = new ArrayList<>();
 		users.add(User.builder().email("jon@townmaking.com").password("Townmaking@1000").firstName("Jon").lastName("Rasmussen").tenant("TENANT").build());

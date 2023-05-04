@@ -7,7 +7,7 @@ import com.tickets.api.model.OrganiserRequest;
 import com.tickets.api.model.OrganiserResponse;
 import com.tickets.api.repository.ExtraRepository;
 import com.tickets.api.repository.OrganiserRepository;
-import com.tickets.api.repository.UserRepository;
+import com.tickets.api.repository.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ import java.util.UUID;
 @Slf4j
 public class OrganiserService {
 	private final OrganiserRepository organiserRepository;
-	private final UserRepository userRepository;
+	private final UserProfileRepository userProfileRepository;
 	private final ExtraRepository extraRepository;
 
 	public OrganiserResponse createOrganiser(OrganiserRequest deliveryPolygonRequest, String tenant) {
@@ -41,7 +41,7 @@ public class OrganiserService {
 		OrganiserEntity organiser = organiserRepository.findByIdAndTenantId(UUID.fromString(organiserId), tenantId)
 				.orElseThrow(() -> new EntityNotFoundException("Organiser not found"));
 
-		UserEntity user = userRepository.findByIdAndTenantId(UUID.fromString(userId), tenantId)
+		UserEntity user = userProfileRepository.findByIdAndTenantId(UUID.fromString(userId), tenantId)
 				.orElseThrow(() -> new EntityNotFoundException("User not found"));
 
 //		organiser.getUsers().add(user);
@@ -50,7 +50,7 @@ public class OrganiserService {
 //		OrganiserEntity save = organiserRepository.save(organiser);
 
 		user.setOrganiser(organiser);
-		userRepository.save(user);
+		userProfileRepository.save(user);
 
 		return getOrganiser(organiserId, tenantId);
 	}

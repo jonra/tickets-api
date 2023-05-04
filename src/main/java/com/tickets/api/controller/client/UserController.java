@@ -5,7 +5,7 @@ import com.tickets.api.model.UserRequest;
 import com.tickets.api.model.UserResponse;
 import com.tickets.api.model.UserRoleRequest;
 import com.tickets.api.service.TenantService;
-import com.tickets.api.service.UserService;
+import com.tickets.api.service.UserProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,7 +32,7 @@ import static org.springframework.http.ResponseEntity.ok;
 public class UserController {
 
 	public static final String PATH = "v1/users";
-	private final UserService userService;
+	private final UserProfileService userService;
 	private final TenantService tenantService;
 
 	@Operation(description = "Create user" )
@@ -46,7 +46,7 @@ public class UserController {
 		return ok(user);
 	}
 
-	@Operation(description = "Create user" )
+	@Operation(description = "Get user" )
 	@ApiResponse(responseCode = "200", description = "Authenticated")
 	@GetMapping("/{userId}")
 	public ResponseEntity<UserResponse> getUser(HttpServletRequest request, @PathVariable String userId) {

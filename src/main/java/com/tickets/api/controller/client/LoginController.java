@@ -1,7 +1,7 @@
 package com.tickets.api.controller.client;
 
 import com.tickets.api.model.LoginRequest;
-import com.tickets.api.service.AuthenticationService;
+import com.tickets.api.service.AuthService;
 import com.tickets.api.service.LoginResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,7 +25,7 @@ import static org.springframework.http.ResponseEntity.ok;
 public class LoginController {
 
 	public static final String PATH = "v1/login";
-	private final AuthenticationService authenticationService;
+	private final AuthService authenticationService;
 
 	@Operation(description = "Login service" )
 	@ApiResponse(responseCode = "200", description = "Authenticated")
