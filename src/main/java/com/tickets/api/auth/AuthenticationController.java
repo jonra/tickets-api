@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/v1/auth")
+@RequestMapping(AuthenticationController.PATH)
 public class AuthenticationController {
-
+    public static final String PATH = "v1/auth";
     private final AuthenticationService service;
     private final TenantService tenantService;
 

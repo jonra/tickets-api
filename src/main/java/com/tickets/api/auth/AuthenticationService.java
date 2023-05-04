@@ -54,6 +54,8 @@ public class AuthenticationService {
                     .token(jwtToken)
                     .email(save.getEmail())
                     .id(save.getId().toString())
+                    .firstName(save.getFirstName())
+                    .lastName(save.getLastName())
                     .build();
 
             return authenticationResponse;

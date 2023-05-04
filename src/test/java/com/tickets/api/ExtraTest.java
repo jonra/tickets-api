@@ -1,5 +1,6 @@
 package com.tickets.api;
 
+import com.tickets.api.auth.AuthenticationResponse;
 import com.tickets.api.enums.EventType;
 import com.tickets.api.enums.ExtraType;
 import com.tickets.api.enums.OrganiserType;
@@ -10,7 +11,6 @@ import com.tickets.api.model.ExtraRequest;
 import com.tickets.api.model.ExtraResponse;
 import com.tickets.api.model.OrganiserRequest;
 import com.tickets.api.model.OrganiserResponse;
-import com.tickets.api.model.TenantRequest;
 import com.tickets.api.model.TicketRequest;
 import com.tickets.api.model.TicketResponse;
 import org.junit.jupiter.api.Test;
@@ -19,14 +19,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static com.tickets.api.TestHelper.addExtraToEvent;
 import static com.tickets.api.TestHelper.addExtraTicket;
+import static com.tickets.api.TestHelper.addExtraToEvent;
 import static com.tickets.api.TestHelper.createEvent;
 import static com.tickets.api.TestHelper.createExtra;
 import static com.tickets.api.TestHelper.createOrganiser;
-import static com.tickets.api.TestHelper.createTenant;
 import static com.tickets.api.TestHelper.createTicket;
 import static com.tickets.api.TestHelper.getExtras;
+import static com.tickets.api.TestHelper.init;
 
 @SpringBootTest(
 		webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -36,12 +36,12 @@ import static com.tickets.api.TestHelper.getExtras;
 
 	@Test
 	void create_extra() {
-		createTenant(TenantRequest.builder().host("127.0.0.1").name("local").build());
+		AuthenticationResponse user = init();
 
 		OrganiserResponse organiser = createOrganiser(OrganiserRequest.builder()
 				.name("test organiser")
 				.type(OrganiserType.ARTIST)
-				.build());
+				.build(), user.getToken());
 
 		// Create generic extra linked to organiser
 		ExtraRequest extraRequest = ExtraRequest.builder()
@@ -49,12 +49,12 @@ import static com.tickets.api.TestHelper.getExtras;
 				.type(ExtraType.ACCOMMODATION)
 				.build();
 
-		ExtraResponse extra = createExtra(extraRequest, organiser.getId());
+		ExtraResponse extra = createExtra(extraRequest, organiser.getId(), user.getToken());
 		assert extra.getId() != null;
 		assert extra.getName().equals(extraRequest.getName());
 		assert extra.getType().equals(extraRequest.getType());
 
-		List<ExtraResponse> extras = getExtras(organiser.getId());
+		List<ExtraResponse> extras = getExtras(organiser.getId(), user.getToken());
 		assert extras.size() == 1;
 		assert extras.get(0).getId().equals(extra.getId());
 		assert extras.get(0).getName().equals(extra.getName());
@@ -64,24 +64,24 @@ import static com.tickets.api.TestHelper.getExtras;
 
 	@Test
 	void add_extra_to_ticket() {
-		createTenant(TenantRequest.builder().host("127.0.0.1").name("local").build());
+		AuthenticationResponse user = init();
 
 		OrganiserResponse organiser = createOrganiser(OrganiserRequest.builder()
 				.name("test organiser")
 				.type(OrganiserType.ARTIST)
-				.build());
+				.build(), user.getToken());
 
 		EventRequest eventRequest = EventRequest.builder()
 				.name("test event")
 				.type(EventType.MUSIC)
 				.build();
-		EventResponse event = createEvent(eventRequest, organiser.getId());
+		EventResponse event = createEvent(eventRequest, organiser.getId(), user.getToken());
 
 		TicketRequest ticketRequest = TicketRequest.builder()
 				.name("test ticket")
 				.type(TicketType.DAY)
 				.build();
-		TicketResponse ticket = createTicket(ticketRequest, organiser.getId(), event.getId());
+		TicketResponse ticket = createTicket(ticketRequest, organiser.getId(), event.getId(), user.getToken());
 
 		// Create generic extra linked to organiser
 		ExtraRequest extraRequest = ExtraRequest.builder()
@@ -90,9 +90,9 @@ import static com.tickets.api.TestHelper.getExtras;
 				.price(BigDecimal.valueOf(100.0))
 				.build();
 
-		ExtraResponse extra = createExtra(extraRequest, organiser.getId());
+		ExtraResponse extra = createExtra(extraRequest, organiser.getId(), user.getToken());
 
-		TicketResponse ticketResponse = addExtraTicket(organiser.getId(), event.getId(), ticket.getId(), extra.getId());
+		TicketResponse ticketResponse = addExtraTicket(organiser.getId(), event.getId(), ticket.getId(), extra.getId(), user.getToken());
 		assert ticketResponse.getExtras().size() == 1;
 		assert ticketResponse.getExtras().get(0).getId().equals(extra.getId());
 		assert ticketResponse.getExtras().get(0).getName().equals(extra.getName());
@@ -102,18 +102,19 @@ import static com.tickets.api.TestHelper.getExtras;
 
 	@Test
 	void add_extra_to_event() {
-		createTenant(TenantRequest.builder().host("127.0.0.1").name("local").build());
+		AuthenticationResponse user = init();
+
 
 		OrganiserResponse organiser = createOrganiser(OrganiserRequest.builder()
 				.name("test organiser")
 				.type(OrganiserType.ARTIST)
-				.build());
+				.build(), user.getToken());
 
 		EventRequest eventRequest = EventRequest.builder()
 				.name("test event")
 				.type(EventType.MUSIC)
 				.build();
-		EventResponse event = createEvent(eventRequest, organiser.getId());
+		EventResponse event = createEvent(eventRequest, organiser.getId(), user.getToken());
 
 		// Create generic extra linked to organiser
 		ExtraRequest extraRequest = ExtraRequest.builder()
@@ -122,9 +123,9 @@ import static com.tickets.api.TestHelper.getExtras;
 				.price(BigDecimal.valueOf(100.0))
 				.build();
 
-		ExtraResponse extra = createExtra(extraRequest, organiser.getId());
+		ExtraResponse extra = createExtra(extraRequest, organiser.getId(), user.getToken());
 
-		EventResponse eventResponse = addExtraToEvent(organiser.getId(), event.getId(), extra.getId());
+		EventResponse eventResponse = addExtraToEvent(organiser.getId(), event.getId(), extra.getId(), user.getToken());
 		assert eventResponse.getExtras().size() == 1;
 		assert eventResponse.getExtras().get(0).getId().equals(extra.getId());
 		assert eventResponse.getExtras().get(0).getName().equals(extra.getName());

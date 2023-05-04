@@ -1,5 +1,9 @@
 package com.tickets.api;
 
+import com.tickets.api.auth.AuthenticationController;
+import com.tickets.api.auth.AuthenticationRequest;
+import com.tickets.api.auth.AuthenticationResponse;
+import com.tickets.api.auth.RegisterRequest;
 import com.tickets.api.controller.admin.CountryController;
 import com.tickets.api.controller.admin.TenantController;
 import com.tickets.api.controller.client.UserController;
@@ -21,7 +25,6 @@ import com.tickets.api.model.TenantRequest;
 import com.tickets.api.model.TenantResponse;
 import com.tickets.api.model.TicketRequest;
 import com.tickets.api.model.TicketResponse;
-import com.tickets.api.model.UserRequest;
 import com.tickets.api.model.UserResponse;
 import com.tickets.api.model.UserRoleRequest;
 import org.springframework.http.MediaType;
@@ -32,7 +35,24 @@ import static io.restassured.RestAssured.given;
 
 public class TestHelper  {
 
-	public static TenantResponse createTenant(TenantRequest tenantRequest) {
+
+	public static AuthenticationResponse init() {
+		createTenant(TenantRequest.builder().host("127.0.0.1").name("local").build(), null);
+
+
+		RegisterRequest userRequest = RegisterRequest.builder()
+				.email("jon@test.com")
+				.password("123456")
+				.firstName("Jon")
+				.lastName("Doe")
+				.build();
+
+		AuthenticationResponse user = createUser(userRequest);
+
+		return user;
+	}
+
+	public static TenantResponse createTenant(TenantRequest tenantRequest, String token) {
 		return given()
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.body(tenantRequest)
@@ -43,8 +63,10 @@ public class TestHelper  {
 				.as(TenantResponse.class);
 	}
 
-	public static OrganiserResponse createOrganiser(OrganiserRequest organiserRequest) {
+	public static OrganiserResponse createOrganiser(OrganiserRequest organiserRequest, String token) {
 		return given()
+				.auth()
+				.oauth2(token)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.body(organiserRequest)
 				.post(OrganiserController.PATH)
@@ -54,8 +76,10 @@ public class TestHelper  {
 				.as(OrganiserResponse.class);
 	}
 
-	public static OrganiserResponse addUserToOrganiser(String userId, String organiserId) {
+	public static OrganiserResponse addUserToOrganiser(String userId, String organiserId, String token) {
 		return given()
+				.auth()
+				.oauth2(token)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.put(replacePlaceholders(OrganiserController.PATH + "/{organiserId}/users/{userId}", organiserId, userId))
 				.then()
@@ -64,8 +88,10 @@ public class TestHelper  {
 				.as(OrganiserResponse.class);
 	}
 
-	public static EventResponse createEvent(EventRequest eventRequest, String organiserId) {
+	public static EventResponse createEvent(EventRequest eventRequest, String organiserId, String token) {
 		return given()
+				.auth()
+				.oauth2(token)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.body(eventRequest)
 				.post(replacePlaceholders(EventController.PATH, organiserId))
@@ -75,8 +101,10 @@ public class TestHelper  {
 				.as(EventResponse.class);
 	}
 
-	public static EventResponse addExtraToEvent(String organiserId, String eventId, String extraId) {
+	public static EventResponse addExtraToEvent(String organiserId, String eventId, String extraId, String token) {
 		return given()
+				.auth()
+				.oauth2(token)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.put(replacePlaceholders(EventController.PATH + "/{eventId}/extras/{extraId}", organiserId, eventId, extraId))
 				.then()
@@ -89,8 +117,10 @@ public class TestHelper  {
 
 
 	// Tickets
-	public static TicketResponse createTicket(TicketRequest ticketRequest, String organiserId, String eventId) {
+	public static TicketResponse createTicket(TicketRequest ticketRequest, String organiserId, String eventId, String token) {
 		return given()
+				.auth()
+				.oauth2(token)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.body(ticketRequest)
 				.post(replacePlaceholders(TicketController.PATH, organiserId, eventId))
@@ -100,8 +130,10 @@ public class TestHelper  {
 				.as(TicketResponse.class);
 	}
 
-	public static TicketResponse addExtraTicket(String organiserId, String eventId, String ticketId, String extraId) {
+	public static TicketResponse addExtraTicket(String organiserId, String eventId, String ticketId, String extraId, String token) {
 		return given()
+				.auth()
+				.oauth2(token)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.put(replacePlaceholders(TicketController.PATH + "/{ticketId}/extras/{extraId}", organiserId, eventId, ticketId, extraId))
 				.then()
@@ -111,8 +143,10 @@ public class TestHelper  {
 	}
 
 	// Extra
-	public static ExtraResponse createExtra(ExtraRequest extraRequest, String organiserId) {
+	public static ExtraResponse createExtra(ExtraRequest extraRequest, String organiserId, String token) {
 		return given()
+				.auth()
+				.oauth2(token)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.body(extraRequest)
 				.post(replacePlaceholders(ExtraController.PATH + "organisers/{organiserId}/extras", organiserId))
@@ -122,8 +156,10 @@ public class TestHelper  {
 				.as(ExtraResponse.class);
 	}
 
-	public static List<ExtraResponse> getExtras(String organiserId) {
+	public static List<ExtraResponse> getExtras(String organiserId, String token) {
 		return given()
+				.auth()
+				.oauth2(token)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.get(replacePlaceholders(ExtraController.PATH + "organisers/{organiserId}/extras", organiserId))
 				.then()
@@ -134,22 +170,37 @@ public class TestHelper  {
 	}
 
 
-	public static UserResponse createUser(UserRequest userRequest) {
+	public static AuthenticationResponse createUser(RegisterRequest userRequest) {
 		return given()
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.body(userRequest)
-				.post(UserController.PATH)
+				.post(AuthenticationController.PATH + "/register")
 				.then()
 				.statusCode(200)
 				.extract()
-				.as(UserResponse.class);
+				.as(AuthenticationResponse.class);
+	}
+
+	public static AuthenticationResponse login(AuthenticationRequest userRequest, String token) {
+		return given()
+				.auth()
+				.oauth2(token)
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.body(userRequest)
+				.post(AuthenticationController.PATH + "/authentication")
+				.then()
+				.statusCode(200)
+				.extract()
+				.as(AuthenticationResponse.class);
 	}
 
 
 
 	// Country
-	public static CountryResponse createCountry(CountryRequest countryRequest) {
+	public static CountryResponse createCountry(CountryRequest countryRequest, String token) {
 		return given()
+				.auth()
+				.oauth2(token)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.body(countryRequest)
 				.post(CountryController.PATH)
@@ -159,8 +210,10 @@ public class TestHelper  {
 				.as(CountryResponse.class);
 	}
 
-	public static CountryResponse addCityToCountry(String countryId, CityRequest cityRequest) {
+	public static CountryResponse addCityToCountry(String countryId, CityRequest cityRequest, String token) {
 		return given()
+				.auth()
+				.oauth2(token)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.body(cityRequest)
 				.put(replacePlaceholders(CountryController.PATH + "/{countryId}/cities", countryId))
@@ -170,8 +223,10 @@ public class TestHelper  {
 				.as(CountryResponse.class);
 	}
 
-	public static List<CountryResponse> getCountries() {
+	public static List<CountryResponse> getCountries(String token) {
 		return given()
+				.auth()
+				.oauth2(token)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.get(CountryController.PATH)
 				.then()
@@ -181,8 +236,10 @@ public class TestHelper  {
 				.getList("", CountryResponse.class);
 	}
 
-	public static List<CityResponse> getCities(String countryId) {
+	public static List<CityResponse> getCities(String countryId, String token) {
 		return given()
+				.auth()
+				.oauth2(token)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.get(replacePlaceholders(CountryController.PATH + "/{countryId}/cities", countryId))
 				.then()
@@ -192,9 +249,13 @@ public class TestHelper  {
 				.getList("", CityResponse.class);
 	}
 
-	public static UserResponse addRoleToUser(UserRoleRequest userRequest, String userId) {
+	public static UserResponse addRoleToUser(UserRoleRequest userRequest, String userId, String token) {
 		return given()
+				.auth()
+				.oauth2(token)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.auth()
+				.oauth2(token)
 				.body(userRequest)
 				.put(replacePlaceholders(UserController.PATH + "/{userId}/roles", userId))
 				.then()

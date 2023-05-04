@@ -1,12 +1,10 @@
 package com.tickets.api.auth;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Builder;
+import lombok.Data;
 
-@Setter
-@Getter
-@ToString
+@Data
+@Builder
 public class AuthenticationRequest {
     String email;
     String password;

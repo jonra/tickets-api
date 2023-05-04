@@ -8,5 +8,7 @@ import lombok.Data;
 public class AuthenticationResponse {
     private String token;
     private String email;
+    private String firstName;
+    private String lastName;
     private String id;
 }

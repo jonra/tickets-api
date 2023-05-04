@@ -1,16 +1,14 @@
 package com.tickets.api;
 
+import com.tickets.api.auth.AuthenticationResponse;
 import com.tickets.api.enums.Role;
-import com.tickets.api.model.TenantRequest;
-import com.tickets.api.model.UserRequest;
 import com.tickets.api.model.UserResponse;
 import com.tickets.api.model.UserRoleRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static com.tickets.api.TestHelper.addRoleToUser;
-import static com.tickets.api.TestHelper.createTenant;
-import static com.tickets.api.TestHelper.createUser;
+import static com.tickets.api.TestHelper.init;
 
 @SpringBootTest(
 		webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -20,37 +18,20 @@ import static com.tickets.api.TestHelper.createUser;
 
 	@Test
 	void create_user() {
-		createTenant(TenantRequest.builder().host("127.0.0.1").name("local").build());
+		AuthenticationResponse user = init();
 
-		UserRequest userRequest = UserRequest.builder()
-				.email("jon@test.com")
-				.password("123456")
-				.firstName("Jon")
-				.lastName("Doe")
-				.build();
-
-		UserResponse user = createUser(userRequest);
-		assert user.getEmail().equals(userRequest.getEmail());
-		assert user.getFirstName().equals(userRequest.getFirstName());
-		assert user.getLastName().equals(userRequest.getLastName());
+		assert user.getEmail().equals(user.getEmail());
+		assert user.getFirstName().equals(user.getFirstName());
+		assert user.getLastName().equals(user.getLastName());
 		assert user.getId() != null;
 	}
 
 	@Test
 	void add_role_to_user() {
-		createTenant(TenantRequest.builder().host("127.0.0.1").name("local").build());
+		AuthenticationResponse user = init();
+		UserResponse userResponse = addRoleToUser(UserRoleRequest.builder().role(Role.ORGANISER).build(), user.getId(), user.getToken());
 
-		UserRequest userRequest = UserRequest.builder()
-				.email("jon@test.com")
-				.password("123456")
-				.firstName("Jon")
-				.lastName("Doe")
-				.build();
-
-		UserResponse user = createUser(userRequest);
-		UserResponse userResponse = addRoleToUser(UserRoleRequest.builder().role(Role.ORGANISER).build(), user.getId());
-
-		assert userResponse.getRoles().size() == 1;
+		assert userResponse.getRoles().size() == 2;
 	}
 
 }
