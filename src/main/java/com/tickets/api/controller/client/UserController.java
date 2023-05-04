@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -42,6 +43,17 @@ public class UserController {
 		TenantResponse tenantResponse = tenantService.getTenant(attribute);
 
 		UserResponse user = userService.createUser(userRequest, tenantResponse.getId());
+		return ok(user);
+	}
+
+	@Operation(description = "Create user" )
+	@ApiResponse(responseCode = "200", description = "Authenticated")
+	@GetMapping("/{userId}")
+	public ResponseEntity<UserResponse> getUser(HttpServletRequest request, @PathVariable String userId) {
+		String attribute = (String) request.getAttribute("clientHost");
+		TenantResponse tenantResponse = tenantService.getTenant(attribute);
+
+		UserResponse user = userService.getUser(userId, tenantResponse.getId());
 		return ok(user);
 	}
 

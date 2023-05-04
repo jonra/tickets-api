@@ -50,11 +50,9 @@ public class EventService {
 		ExtraEntity extra = extraRepository.findByIdAndTenantIdAndOrganiserId(UUID.fromString(extraId), tenantId, UUID.fromString(organiserId))
 				.orElseThrow(() -> new EntityNotFoundException("Extra not found"));
 
-		event.getExtras().add(extra);
-		eventRepository.save(event);
-//		extra.getEvents().add(event);
-//		extraRepository.save(extra);
+		extra.getEvents().add(event);
+		extraRepository.save(extra);
 
-		return getEvent(event.toString(), tenantId);
+		return getEvent(event.getId().toString(), tenantId);
 	}
 }

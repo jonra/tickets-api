@@ -3,7 +3,6 @@ package com.tickets.api;
 import com.tickets.api.enums.OrganiserType;
 import com.tickets.api.model.OrganiserRequest;
 import com.tickets.api.model.OrganiserResponse;
-import com.tickets.api.model.OrganiserUserRequest;
 import com.tickets.api.model.TenantRequest;
 import com.tickets.api.model.UserRequest;
 import com.tickets.api.model.UserResponse;
@@ -44,6 +43,7 @@ import static com.tickets.api.TestHelper.createUser;
 				.type(OrganiserType.ARTIST)
 				.build());
 
+
 		UserRequest userRequest = UserRequest.builder()
 				.email("jon@test.com")
 				.password("123456")
@@ -53,11 +53,7 @@ import static com.tickets.api.TestHelper.createUser;
 
 		UserResponse user = createUser(userRequest);
 
-		OrganiserResponse withUser = addUserToOrganiser(OrganiserUserRequest.builder()
-				.organiserId(organiser.getId())
-				.userId(user.getId())
-				.build());
-		System.out.println("**** " + withUser.getUsers());
+		OrganiserResponse withUser = addUserToOrganiser(user.getId(), organiser.getId());
 		assert withUser.getUsers().size() == 1;
 
 	}

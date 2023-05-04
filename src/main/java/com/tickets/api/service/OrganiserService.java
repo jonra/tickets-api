@@ -5,7 +5,6 @@ import com.tickets.api.entity.UserEntity;
 import com.tickets.api.exceptions.EntityNotFoundException;
 import com.tickets.api.model.OrganiserRequest;
 import com.tickets.api.model.OrganiserResponse;
-import com.tickets.api.model.OrganiserUserRequest;
 import com.tickets.api.repository.ExtraRepository;
 import com.tickets.api.repository.OrganiserRepository;
 import com.tickets.api.repository.UserRepository;
@@ -34,21 +33,26 @@ public class OrganiserService {
 	public OrganiserResponse getOrganiser(String eventId, String tenant) {
 		OrganiserEntity save = organiserRepository.findByIdAndTenantId(UUID.fromString(eventId), tenant)
 				.orElseThrow(() -> new EntityNotFoundException("Organiser not found"));
+		log.info("organiser = {}", save);
 		return OrganiserResponse.fromEntity(save);
 	}
 
-	public OrganiserResponse addUserToOrganiser(OrganiserUserRequest userRequest, String tenantId) {
-		OrganiserEntity organiser = organiserRepository.findByIdAndTenantId(UUID.fromString(userRequest.getOrganiserId()), tenantId)
+	public OrganiserResponse addUserToOrganiser(String organiserId, String userId, String tenantId) {
+		OrganiserEntity organiser = organiserRepository.findByIdAndTenantId(UUID.fromString(organiserId), tenantId)
 				.orElseThrow(() -> new EntityNotFoundException("Organiser not found"));
 
-		UserEntity user = userRepository.findByIdAndTenantId(UUID.fromString(userRequest.getUserId()), tenantId)
+		UserEntity user = userRepository.findByIdAndTenantId(UUID.fromString(userId), tenantId)
 				.orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-		organiser.getUsers().add(user);
-		organiserRepository.save(organiser);
+//		organiser.getUsers().add(user);
+//
+//		log.info("organiser before saving = {}", organiser);
+//		OrganiserEntity save = organiserRepository.save(organiser);
 
+		user.setOrganiser(organiser);
+		userRepository.save(user);
 
-		return getOrganiser(userRequest.getOrganiserId(), tenantId);
+		return getOrganiser(organiserId, tenantId);
 	}
 
 }

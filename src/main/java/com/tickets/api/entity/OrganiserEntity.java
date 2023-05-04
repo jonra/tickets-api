@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,6 +22,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class OrganiserEntity extends BaseEntity {
 	@Column
 	@NotNull String tenantId;
@@ -40,12 +42,11 @@ public class OrganiserEntity extends BaseEntity {
 	@OneToMany(mappedBy = "organiser")
 	List<EventEntity> events = new ArrayList<>();
 
-	@OneToMany(mappedBy = "organiser")
+	@OneToMany(mappedBy = "organiser", cascade = {jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.MERGE})
 	List<UserEntity> users = new ArrayList<>();
 
 	@OneToMany(mappedBy = "organiser")
 	List<ExtraEntity> extras = new ArrayList<>();
-
 
 
 }

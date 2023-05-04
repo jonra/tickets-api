@@ -33,4 +33,14 @@ public class UserEntity extends BaseEntity {
 	@ManyToOne
 	private OrganiserEntity organiser;
 
+	@Override public String toString() {
+		return "UserEntity{" +
+				"email='" + email + '\'' +
+				", password='" + password + '\'' +
+				", firstName='" + firstName + '\'' +
+				", lastName='" + lastName + '\'' +
+				", tenantId='" + tenantId + '\'' +
+				", roles=" + roles +
+				'}';
+	}
 }

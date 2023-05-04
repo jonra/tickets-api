@@ -30,4 +30,11 @@ public class UserService {
 
 		return UserResponse.fromEntity(save);
 	}
+
+	public UserResponse getUser(String userId, String id) {
+		UserEntity user = userRepository.findByIdAndTenantId(UUID.fromString(userId), id)
+				.orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+		return UserResponse.fromEntity(user);
+	}
 }

@@ -1,5 +1,7 @@
 package com.tickets.api.model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tickets.api.entity.OrganiserEntity;
 import com.tickets.api.enums.OrganiserType;
 import lombok.Builder;
@@ -26,5 +28,13 @@ public class OrganiserResponse {
 				.type(entity.getType())
 				.users(users)
 				.build();
+	}
+
+	public String toJson() {
+		try {
+			return new ObjectMapper().writeValueAsString(this);
+		} catch (JsonProcessingException e) {
+			return null;
+		}
 	}
 }

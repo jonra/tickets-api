@@ -17,7 +17,6 @@ import com.tickets.api.model.ExtraRequest;
 import com.tickets.api.model.ExtraResponse;
 import com.tickets.api.model.OrganiserRequest;
 import com.tickets.api.model.OrganiserResponse;
-import com.tickets.api.model.OrganiserUserRequest;
 import com.tickets.api.model.TenantRequest;
 import com.tickets.api.model.TenantResponse;
 import com.tickets.api.model.TicketRequest;
@@ -55,11 +54,10 @@ public class TestHelper  {
 				.as(OrganiserResponse.class);
 	}
 
-	public static OrganiserResponse addUserToOrganiser(OrganiserUserRequest organiserRequest) {
+	public static OrganiserResponse addUserToOrganiser(String userId, String organiserId) {
 		return given()
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.body(organiserRequest)
-				.put(OrganiserController.PATH + "/users")
+				.put(replacePlaceholders(OrganiserController.PATH + "/{organiserId}/users/{userId}", organiserId, userId))
 				.then()
 				.statusCode(200)
 				.extract()
