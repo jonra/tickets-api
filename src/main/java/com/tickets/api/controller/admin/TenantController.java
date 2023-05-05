@@ -1,5 +1,7 @@
 package com.tickets.api.controller.admin;
 
+import com.tickets.api.auth.Authorization;
+import com.tickets.api.enums.Role;
 import com.tickets.api.model.TenantRequest;
 import com.tickets.api.model.TenantResponse;
 import com.tickets.api.service.TenantService;
@@ -29,6 +31,7 @@ public class TenantController {
 	@ApiResponse(responseCode = "200", description = "Tenant details")
 	@PostMapping()
 	public ResponseEntity<TenantResponse> createTenant(HttpServletRequest request, @RequestBody TenantRequest tenantRequest) {
+		Authorization.hasRole(request, Role.TENANT_ADMIN);
 
 		TenantResponse tenant = tenantService.createTenant(tenantRequest);
 

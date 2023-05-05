@@ -1,6 +1,6 @@
 package com.tickets.api.controller.organiser;
 
-import com.tickets.api.model.TenantResponse;
+import com.tickets.api.auth.Authorization;
 import com.tickets.api.model.TicketRequest;
 import com.tickets.api.model.TicketResponse;
 import com.tickets.api.service.TenantService;
@@ -34,10 +34,10 @@ public class TicketController {
 	@ApiResponse(responseCode = "200", description = "Ticket details")
 	@PostMapping()
 	public ResponseEntity<TicketResponse> createTicket(HttpServletRequest request, @RequestBody TicketRequest ticketRequest, @PathVariable String organiserId, @PathVariable String eventId) {
-		String attribute = (String) request.getAttribute("clientHost");
-		TenantResponse tenantResponse = tenantService.getTenant(attribute);
+		Authorization.isOrganiserId(request, organiserId);
+		String tenantId = Authorization.getTenantId(request);
 
-		TicketResponse ticket = ticketService.createTicket(ticketRequest, organiserId, eventId, tenantResponse.getId());
+		TicketResponse ticket = ticketService.createTicket(ticketRequest, organiserId, eventId, tenantId);
 
 		return ResponseEntity.ok(ticket);
 	}
@@ -46,10 +46,10 @@ public class TicketController {
 	@ApiResponse(responseCode = "200", description = "Event details")
 	@PutMapping("/{ticketId}/extras/{extraId}")
 	public ResponseEntity<TicketResponse> addExtraToOrganiser(HttpServletRequest request, @PathVariable String organiserId, @PathVariable String eventId, @PathVariable String ticketId, @PathVariable String extraId) {
-		String attribute = (String) request.getAttribute("clientHost");
-		TenantResponse tenantResponse = tenantService.getTenant(attribute);
+		Authorization.isOrganiserId(request, organiserId);
+		String tenantId = Authorization.getTenantId(request);
 
-		TicketResponse eventResponse = ticketService.addExtraToTicket(tenantResponse.getId(), organiserId, eventId, ticketId, extraId);
+		TicketResponse eventResponse = ticketService.addExtraToTicket(tenantId, organiserId, eventId, ticketId, extraId);
 
 		return ResponseEntity.ok(eventResponse);
 	}

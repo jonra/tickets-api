@@ -19,4 +19,6 @@ public class TenantEntity extends BaseEntity {
 	private String host;
 	@Column
 	private String name;
+	@Column
+	private String issuer;
 }

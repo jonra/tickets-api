@@ -1,8 +1,8 @@
 package com.tickets.api.controller.organiser;
 
+import com.tickets.api.auth.Authorization;
 import com.tickets.api.model.ExtraRequest;
 import com.tickets.api.model.ExtraResponse;
-import com.tickets.api.model.TenantResponse;
 import com.tickets.api.service.ExtraService;
 import com.tickets.api.service.TenantService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,10 +36,10 @@ public class ExtraController {
 	@ApiResponse(responseCode = "200", description = "Event details")
 	@PostMapping("organisers/{organiserId}/extras")
 	public ResponseEntity<ExtraResponse> createExtra(HttpServletRequest request, @RequestBody ExtraRequest extraRequest, @PathVariable String organiserId) {
-		String attribute = (String) request.getAttribute("clientHost");
-		TenantResponse tenantResponse = tenantService.getTenant(attribute);
+		Authorization.isOrganiserId(request, organiserId);
+		String tenantId = Authorization.getTenantId(request);
 
-		ExtraResponse extra = extraService.createExtra(extraRequest, organiserId, tenantResponse.getId());
+		ExtraResponse extra = extraService.createExtra(extraRequest, organiserId, tenantId);
 
 		return ResponseEntity.ok(extra);
 	}
@@ -48,10 +48,12 @@ public class ExtraController {
 	@ApiResponse(responseCode = "200", description = "Extra details")
 	@GetMapping("organisers/{organiserId}/extras")
 	public ResponseEntity<List<ExtraResponse>> getExtrasForOrganiser(HttpServletRequest request, @PathVariable String organiserId) {
-		String attribute = (String) request.getAttribute("clientHost");
-		TenantResponse tenantResponse = tenantService.getTenant(attribute);
+		Authorization.isOrganiserId(request, organiserId);
+		String tenantId = Authorization.getTenantId(request);
 
-		List<ExtraResponse> extra = extraService.getExtras(organiserId, tenantResponse.getId());
+
+
+		List<ExtraResponse> extra = extraService.getExtras(organiserId, tenantId);
 
 		return ResponseEntity.ok(extra);
 	}

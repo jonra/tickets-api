@@ -1,9 +1,11 @@
-package com.tickets.api.controller.sec.user;
+package com.tickets.api.repository;
 
 import com.tickets.api.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<UserEntity, Integer> {
+import java.util.UUID;
+
+public interface UserRepository extends JpaRepository<UserEntity, UUID> {
 
     UserEntity findByEmail(String email);
 }

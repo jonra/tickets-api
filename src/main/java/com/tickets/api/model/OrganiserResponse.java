@@ -18,6 +18,9 @@ public class OrganiserResponse {
 	OrganiserType type;
 	List<String> users;
 	public static OrganiserResponse fromEntity(OrganiserEntity entity) {
+		if (entity == null) {
+			return null;
+		}
 		List<String> users = null;
 		if (entity.getUsers() != null) {
 			 users = entity.getUsers().stream().map(user -> user.getId().toString()).collect(Collectors.toList());

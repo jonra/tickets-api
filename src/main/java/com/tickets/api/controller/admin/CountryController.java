@@ -1,5 +1,7 @@
 package com.tickets.api.controller.admin;
 
+import com.tickets.api.auth.Authorization;
+import com.tickets.api.enums.Role;
 import com.tickets.api.model.CityRequest;
 import com.tickets.api.model.CityResponse;
 import com.tickets.api.model.CountryRequest;
@@ -39,7 +41,7 @@ public class CountryController {
 	@ApiResponse(responseCode = "200", description = "Country details")
 	@PostMapping()
 	public ResponseEntity<CountryResponse> createCountry(HttpServletRequest request, @RequestBody CountryRequest countryRequest) {
-
+		Authorization.hasRole(request, Role.TENANT_ADMIN);
 		CountryResponse country = countryService.createCountry(countryRequest);
 
 		return ResponseEntity.ok(country);
@@ -49,7 +51,6 @@ public class CountryController {
 	@ApiResponse(responseCode = "200", description = "Country list")
 	@GetMapping()
 	public ResponseEntity<List<CountryResponse>> getCountries(HttpServletRequest request) {
-
 		List<CountryResponse> countries = countryService.getCountries();
 
 		return ResponseEntity.ok(countries);
@@ -59,6 +60,7 @@ public class CountryController {
 	@ApiResponse(responseCode = "200", description = "Country details")
 	@PutMapping("/{countryId}/cities")
 	public ResponseEntity<CountryResponse> addCityToCountry(HttpServletRequest request, @Valid @RequestBody CityRequest cityRequest, @PathVariable String countryId) {
+		Authorization.hasRole(request, Role.TENANT_ADMIN);
 
 		CountryResponse country = countryService.addCityToCountry(countryId, cityRequest);
 

@@ -1,7 +1,7 @@
 package com.tickets.api.auth;
 
 import com.tickets.api.config.security.JwtService;
-import com.tickets.api.controller.sec.user.UserService;
+import com.tickets.api.service.UserService;
 import com.tickets.api.entity.UserEntity;
 import com.tickets.api.enums.Role;
 import org.springframework.beans.factory.annotation.Autowired;

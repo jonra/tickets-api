@@ -16,6 +16,7 @@ public class UserResponse {
 	private String firstName;
 	private String lastName;
 	private Set<Role> roles;
+	private OrganiserResponse organiser;
 
 	public static UserResponse fromEntity(UserEntity userEntity) {
 		return Optional.ofNullable(
@@ -27,6 +28,7 @@ public class UserResponse {
 						.firstName(tenant.getFirstName())
 						.lastName(tenant.getLastName())
 						.roles(tenant.getRoles())
+						.organiser(OrganiserResponse.fromEntity(tenant.getOrganiser()))
 						.build()
 		).orElse(null);
 	}

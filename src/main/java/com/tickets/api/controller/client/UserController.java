@@ -1,6 +1,6 @@
 package com.tickets.api.controller.client;
 
-import com.tickets.api.model.TenantResponse;
+import com.tickets.api.auth.Authorization;
 import com.tickets.api.model.UserRequest;
 import com.tickets.api.model.UserResponse;
 import com.tickets.api.model.UserRoleRequest;
@@ -39,10 +39,9 @@ public class UserController {
 	@ApiResponse(responseCode = "200", description = "Authenticated")
 	@PostMapping()
 	public ResponseEntity<UserResponse> createUser(HttpServletRequest request, @Valid @RequestBody UserRequest userRequest) {
-		String attribute = (String) request.getAttribute("clientHost");
-		TenantResponse tenantResponse = tenantService.getTenant(attribute);
+		String tenantId = Authorization.getTenantId(request);
 
-		UserResponse user = userService.createUser(userRequest, tenantResponse.getId());
+		UserResponse user = userService.createUser(userRequest, tenantId);
 		return ok(user);
 	}
 
@@ -50,10 +49,9 @@ public class UserController {
 	@ApiResponse(responseCode = "200", description = "Authenticated")
 	@GetMapping("/{userId}")
 	public ResponseEntity<UserResponse> getUser(HttpServletRequest request, @PathVariable String userId) {
-		String attribute = (String) request.getAttribute("clientHost");
-		TenantResponse tenantResponse = tenantService.getTenant(attribute);
+		String tenantId = Authorization.getTenantId(request);
 
-		UserResponse user = userService.getUser(userId, tenantResponse.getId());
+		UserResponse user = userService.getUser(userId, tenantId);
 		return ok(user);
 	}
 
@@ -61,10 +59,9 @@ public class UserController {
 	@ApiResponse(responseCode = "200", description = "Authenticated")
 	@PutMapping("/{userId}/roles")
 	public ResponseEntity<UserResponse> addRolesToUser(HttpServletRequest request, @Valid @RequestBody UserRoleRequest userRequest, @PathVariable String userId) {
-		String attribute = (String) request.getAttribute("clientHost");
-		TenantResponse tenantResponse = tenantService.getTenant(attribute);
+		String tenantId = Authorization.getTenantId(request);
 
-		UserResponse user = userService.addRoleToUser(userRequest, userId, tenantResponse.getId());
+		UserResponse user = userService.addRoleToUser(userRequest, userId, tenantId);
 		return ok(user);
 	}
 

@@ -1,8 +1,8 @@
 package com.tickets.api.controller.organiser;
 
+import com.tickets.api.auth.Authorization;
 import com.tickets.api.model.OrganiserRequest;
 import com.tickets.api.model.OrganiserResponse;
-import com.tickets.api.model.TenantResponse;
 import com.tickets.api.service.OrganiserService;
 import com.tickets.api.service.TenantService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,12 +35,12 @@ public class OrganiserController {
 	@ApiResponse(responseCode = "200", description = "Event details")
 	@PostMapping()
 	public ResponseEntity<OrganiserResponse> createOrganiser(HttpServletRequest request, @RequestBody OrganiserRequest organiserUserRequest) {
-		String attribute = (String) request.getAttribute("clientHost");
-		TenantResponse tenantResponse = tenantService.getTenant(attribute);
+		String tenantId = Authorization.getTenantId(request);
+		String userId = Authorization.getUserId(request);
 
-		OrganiserResponse organiser = organiserService.createOrganiser(organiserUserRequest, tenantResponse.getId());
+		OrganiserResponse organiser = organiserService.createOrganiser(organiserUserRequest, tenantId);
 		// Add current user to organiser
-//		organiserService.addUserToOrganiser(OrganiserUserRequest.builder().userId("").organiserId(organiser.getId()).build(), tenantResponse.getId());
+		organiserService.addUserToOrganiser(organiser.getId(), userId, tenantId);
 		return ResponseEntity.ok(organiser);
 	}
 
@@ -48,12 +48,15 @@ public class OrganiserController {
 	@ApiResponse(responseCode = "200", description = "Organiser details")
 	@GetMapping("/{organiserId}")
 	public ResponseEntity<OrganiserResponse> getOrganiser(HttpServletRequest request, @PathVariable String organiserId) {
-		String attribute = (String) request.getAttribute("clientHost");
-		TenantResponse tenantResponse = tenantService.getTenant(attribute);
+		Authorization.isOrganiserId(request, organiserId);
+		String tenantId = Authorization.getTenantId(request);
+		String userId = Authorization.getUserId(request);
 
-		OrganiserResponse organiser = organiserService.getOrganiser(organiserId, tenantResponse.getId());
+
+
+		OrganiserResponse organiser = organiserService.getOrganiser(organiserId, tenantId);
 		// Add current user to organiser
-//		organiserService.addUserToOrganiser(OrganiserUserRequest.builder().userId("").organiserId(organiser.getId()).build(), tenantResponse.getId());
+		organiserService.addUserToOrganiser(organiser.getId(), userId, tenantId);
 		return ResponseEntity.ok(organiser);
 	}
 
@@ -61,10 +64,10 @@ public class OrganiserController {
 	@ApiResponse(responseCode = "200", description = "Event details")
 	@PutMapping("/{organiserId}/users/{userId}")
 	public ResponseEntity<OrganiserResponse> addUserToOrganiser(HttpServletRequest request, @PathVariable String organiserId, @PathVariable String userId) {
-		String attribute = (String) request.getAttribute("clientHost");
-		TenantResponse tenantResponse = tenantService.getTenant(attribute);
+		Authorization.isOrganiserId(request, organiserId);
+		String tenantId = Authorization.getTenantId(request);
 
-		OrganiserResponse organiserResponse = organiserService.addUserToOrganiser(organiserId, userId, tenantResponse.getId());
+		OrganiserResponse organiserResponse = organiserService.addUserToOrganiser(organiserId, userId, tenantId);
 
 		System.out.println("organiserResponse = " + organiserResponse.toJson());
 		return ResponseEntity.ok(organiserResponse);

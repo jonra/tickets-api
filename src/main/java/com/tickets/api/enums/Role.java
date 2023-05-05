@@ -1,5 +1,5 @@
 package com.tickets.api.enums;
 
 public enum Role {
-	ADMIN, ORGANISER, USER
+	TENANT_ADMIN, ADMIN, ORGANISER, USER
 }

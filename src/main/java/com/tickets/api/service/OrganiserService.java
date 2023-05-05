@@ -44,11 +44,6 @@ public class OrganiserService {
 		UserEntity user = userProfileRepository.findByIdAndTenantId(UUID.fromString(userId), tenantId)
 				.orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-//		organiser.getUsers().add(user);
-//
-//		log.info("organiser before saving = {}", organiser);
-//		OrganiserEntity save = organiserRepository.save(organiser);
-
 		user.setOrganiser(organiser);
 		userProfileRepository.save(user);
 

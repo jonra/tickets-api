@@ -1,5 +1,6 @@
-package com.tickets.api.controller.sec.user;
+package com.tickets.api.service;
 
+import com.tickets.api.repository.UserRepository;
 import com.tickets.api.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +19,10 @@ public class UserService implements UserDetailsService {
     }
 
     public UserEntity findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    public UserEntity findByEmail(String email, String tenantId) {
         return userRepository.findByEmail(email);
     }
 

@@ -10,9 +10,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -23,6 +23,25 @@ public class JwtService {
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
+    public String extractAudience(String token) {
+        return extractClaim(token, Claims::getAudience);
+    }
+    public String extractIssuer(String token) {
+        return extractClaim(token, Claims::getIssuer);
+    }
+    public List extractRoles(String token) {
+        return extractAllClaims(token).get("roles", List.class);
+    }
+    public String extractEmail(String token) {
+        return extractAllClaims(token).get("email", String.class);
+    }
+    public String extractUserId(String token) {
+        return extractAllClaims(token).get("userId", String.class);
+    }
+
+    public String extractTenantId(String token) {
+        return extractAllClaims(token).get("tenantId", String.class);
+    }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
@@ -32,8 +51,10 @@ public class JwtService {
     public String generateToken(UserEntity userEntityDetails) {
         HashMap<String, Object> extraClaims = new HashMap<>();
 
-        extraClaims.put("role", userEntityDetails.getRoles());
+        extraClaims.put("roles", userEntityDetails.getRoles());
         extraClaims.put("email", userEntityDetails.getUsername());
+        extraClaims.put("userId", userEntityDetails.getId());
+        extraClaims.put("tenantId", userEntityDetails.getTenantId());
 
         return generateToken(extraClaims, userEntityDetails);
     }
@@ -43,7 +64,7 @@ public class JwtService {
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000*60*24))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000*60*60*24))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .setIssuer("tickets-api")
                 .compact();

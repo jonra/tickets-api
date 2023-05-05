@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -42,7 +43,7 @@ public class OrganiserEntity extends BaseEntity {
 	@OneToMany(mappedBy = "organiser")
 	List<EventEntity> events = new ArrayList<>();
 
-	@OneToMany(mappedBy = "organiser", cascade = {jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.MERGE})
+	@OneToMany(mappedBy = "organiser", cascade = {jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.MERGE}, fetch = FetchType.EAGER)
 	List<UserEntity> users = new ArrayList<>();
 
 	@OneToMany(mappedBy = "organiser")
