@@ -93,7 +93,7 @@ import static com.tickets.api.TestHelper.login;
 		assert countryResponse2.getCities().size() == 2;
 
 		List<CountryResponse> countries = getCountries(user.getToken());
-		assert countries.size() == 1;
+		assert countries.size() == 2;
 	}
 
 	@Test
@@ -107,7 +107,7 @@ import static com.tickets.api.TestHelper.login;
 		createCountry("Country name 3", "ISO3", "City name 3", login.getToken());
 
 		List<CountryResponse> countries = getCountries(user.getToken());
-		assert countries.size() == 3;
+		assert countries.size() == 4;
 	}
 
 	@Test

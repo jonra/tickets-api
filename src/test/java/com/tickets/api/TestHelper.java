@@ -40,10 +40,11 @@ public class TestHelper  {
 	public static final String PASSWORD = "password";
 
 	public static AuthenticationResponse init() {
-		createTenant(TenantRequest.builder()
+		TenantResponse local = createTenant(TenantRequest.builder()
 				.host("127.0.0.1")
 				.name("local")
 				.issuer("tickets-api")
+				//.countryId(netherlands.getId())
 				.build(), null);
 
 
@@ -55,6 +56,17 @@ public class TestHelper  {
 				.build();
 
 		AuthenticationResponse user = createUser(userRequest);
+
+		addRoleToUser(user.getId(), Role.TENANT_ADMIN, user.getToken());
+		AuthenticationResponse login = login(AuthenticationRequest.builder().email(EMAIL).password(PASSWORD).build());
+
+		CountryResponse netherlands = createCountry(CountryRequest.builder()
+				.name("Netherlands")
+				.build(), login.getToken());
+
+		TenantResponse tenantResponse = addCountryTenant(TenantRequest.builder()
+				.countryId(netherlands.getId())
+				.build(), local.getId());
 
 		return user;
 	}
@@ -70,6 +82,17 @@ public class TestHelper  {
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.body(tenantRequest)
 				.post(TenantController.PATH)
+				.then()
+				.statusCode(200)
+				.extract()
+				.as(TenantResponse.class);
+	}
+
+	public static TenantResponse addCountryTenant(TenantRequest tenantRequest, String tenantId) {
+		return given()
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.body(tenantRequest)
+				.patch(replacePlaceholders(TenantController.PATH + "/{tenantId}", tenantId))
 				.then()
 				.statusCode(200)
 				.extract()

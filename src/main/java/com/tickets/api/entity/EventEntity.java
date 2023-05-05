@@ -9,6 +9,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,6 +42,9 @@ public class EventEntity extends BaseEntity {
 	Date endDate;
 	@Enumerated(EnumType.STRING)
 	@NotNull EventType type;
+
+	@OneToOne
+	private CityEntity city;
 
 	@OneToMany(mappedBy = "event")
 	List<TicketEntity> tickets = new ArrayList<>();

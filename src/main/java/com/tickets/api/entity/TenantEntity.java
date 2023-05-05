@@ -2,6 +2,7 @@ package com.tickets.api.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,4 +22,6 @@ public class TenantEntity extends BaseEntity {
 	private String name;
 	@Column
 	private String issuer;
+	@OneToOne
+	private CountryEntity country;
 }

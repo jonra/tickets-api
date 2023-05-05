@@ -3,6 +3,7 @@ package com.tickets.api.entity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,7 +32,7 @@ public class CountryEntity extends BaseEntity {
 	@Column
 	String phoneCode;
 
-	@OneToMany(mappedBy = "country", orphanRemoval = true, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@OneToMany(mappedBy = "country", orphanRemoval = true, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER)
 	List<CityEntity> cities = new ArrayList<>();
 
 }

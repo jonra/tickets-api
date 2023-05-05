@@ -13,6 +13,7 @@ public class TenantResponse {
 	String name;
 	String host;
 	String issuer;
+	CountryResponse country;
 	public static TenantResponse fromEntity(TenantEntity tenantEntity) {
 		return Optional.ofNullable(
 				tenantEntity
@@ -22,6 +23,7 @@ public class TenantResponse {
 						.name(tenant.getName())
 						.host(tenant.getHost())
 						.issuer(tenant.getIssuer())
+						.country(CountryResponse.fromEntity(tenant.getCountry()))
 						.build()
 		).orElse(null);
 	}
