@@ -1,6 +1,5 @@
 package com.tickets.api.model;
 
-import com.tickets.api.enums.Role;
 import lombok.Builder;
 import lombok.Data;
 
@@ -13,7 +12,7 @@ public class UserProfile {
 	private String lastName;
 	private String email;
 	private String tenantId;
-	private List<Role> roles;
+	private List<String> roles;
 	private String userId;
 	private String organiserId;
 }

@@ -6,7 +6,6 @@ import com.tickets.api.model.CityRequest;
 import com.tickets.api.model.CityResponse;
 import com.tickets.api.model.CountryRequest;
 import com.tickets.api.model.CountryResponse;
-import com.tickets.api.repository.CityRepository;
 import com.tickets.api.service.CountryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -32,7 +31,6 @@ import java.util.List;
 @Slf4j
 @Tag(name = "Admin API", description = "The tenant API manages tenant settings.")
 public class CountryController {
-	private final CityRepository cityRepository;
 
 	public static final String PATH = "v1/countries";
 	private final CountryService countryService;
@@ -41,7 +39,7 @@ public class CountryController {
 	@ApiResponse(responseCode = "200", description = "Country details")
 	@PostMapping()
 	public ResponseEntity<CountryResponse> createCountry(HttpServletRequest request, @RequestBody CountryRequest countryRequest) {
-		Authorization.hasRole(request, Role.TENANT_ADMIN);
+		Authorization.hasRole(request, Role.TENANT_ADMIN.name());
 		CountryResponse country = countryService.createCountry(countryRequest);
 
 		return ResponseEntity.ok(country);
@@ -60,7 +58,7 @@ public class CountryController {
 	@ApiResponse(responseCode = "200", description = "Country details")
 	@PutMapping("/{countryId}/cities")
 	public ResponseEntity<CountryResponse> addCityToCountry(HttpServletRequest request, @Valid @RequestBody CityRequest cityRequest, @PathVariable String countryId) {
-		Authorization.hasRole(request, Role.TENANT_ADMIN);
+		Authorization.hasRole(request, Role.TENANT_ADMIN.name());
 
 		CountryResponse country = countryService.addCityToCountry(countryId, cityRequest);
 

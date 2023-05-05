@@ -1,6 +1,5 @@
 package com.tickets.api.config.security;
 
-import com.tickets.api.enums.Role;
 import com.tickets.api.model.OrganiserResponse;
 import com.tickets.api.model.TenantResponse;
 import com.tickets.api.model.UserProfile;
@@ -68,7 +67,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 TenantResponse tenantResponse = tenantService.getTenant(clientHost);
                 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-                List<Role> jwtRoles = jwtService.extractRoles(jwt);
+                List<String> jwtRoles = jwtService.extractRoles(jwt);
                 String jwtEmail = jwtService.extractEmail(jwt);
                 String jwtUserId = jwtService.extractUserId(jwt);
                 String jwtTenantId = jwtService.extractTenantId(jwt);
@@ -77,9 +76,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 UserResponse user = userService.getUser(jwtUserId, jwtTenantId);
                 OrganiserResponse organiser = user.getOrganiser();
 
-                assert tenantResponse.equals(jwtTenantId);
+                assert tenantResponse.getId().equals(jwtTenantId);
                 assert jwtEmail.equals(userEmail);
                 assert jwtIssuer.equals(tenantResponse.getIssuer());
+
 
                 UserProfile profile = UserProfile.builder()
                         .email(jwtEmail)

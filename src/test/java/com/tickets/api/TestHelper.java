@@ -11,6 +11,7 @@ import com.tickets.api.controller.organiser.EventController;
 import com.tickets.api.controller.organiser.ExtraController;
 import com.tickets.api.controller.organiser.OrganiserController;
 import com.tickets.api.controller.organiser.TicketController;
+import com.tickets.api.enums.Role;
 import com.tickets.api.model.CityRequest;
 import com.tickets.api.model.CityResponse;
 import com.tickets.api.model.CountryRequest;
@@ -35,14 +36,20 @@ import static io.restassured.RestAssured.given;
 
 public class TestHelper  {
 
+	public static final String EMAIL = "test@user.com";
+	public static final String PASSWORD = "password";
 
 	public static AuthenticationResponse init() {
-		createTenant(TenantRequest.builder().host("127.0.0.1").name("local").build(), null);
+		createTenant(TenantRequest.builder()
+				.host("127.0.0.1")
+				.name("local")
+				.issuer("tickets-api")
+				.build(), null);
 
 
 		RegisterRequest userRequest = RegisterRequest.builder()
-				.email("jon@test.com")
-				.password("123456")
+				.email(EMAIL)
+				.password(PASSWORD)
 				.firstName("Jon")
 				.lastName("Doe")
 				.build();
@@ -50,6 +57,12 @@ public class TestHelper  {
 		AuthenticationResponse user = createUser(userRequest);
 
 		return user;
+	}
+
+	public static UserResponse addRoleToUser(String userId, Role role, String token) {
+		UserResponse userResponse = addRoleToUser(UserRoleRequest.builder().role(role).build(), userId, token);
+
+		return userResponse;
 	}
 
 	public static TenantResponse createTenant(TenantRequest tenantRequest, String token) {
@@ -181,10 +194,8 @@ public class TestHelper  {
 				.as(AuthenticationResponse.class);
 	}
 
-	public static AuthenticationResponse login(AuthenticationRequest userRequest, String token) {
+	public static AuthenticationResponse login(AuthenticationRequest userRequest) {
 		return given()
-				.auth()
-				.oauth2(token)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.body(userRequest)
 				.post(AuthenticationController.PATH + "/authentication")

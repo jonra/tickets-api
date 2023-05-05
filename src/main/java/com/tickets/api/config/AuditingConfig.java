@@ -4,6 +4,7 @@ import com.tickets.api.entity.UserEntity;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -18,7 +19,17 @@ public class AuditingConfig implements AuditorAware<String> {
 		if (authentication == null || !authentication.isAuthenticated()) {
 			return Optional.empty();
 		}
-		UserEntity userEntity = Optional.of((UserEntity) authentication.getPrincipal()).orElse(null);
-		return Optional.ofNullable(userEntity.getId().toString() + " - " + userEntity.getEmail());
+
+		if (authentication == null || authentication.getPrincipal() == null) {
+			// User is not authenticated
+			return Optional.empty();
+		} else if (authentication instanceof AnonymousAuthenticationToken) {
+			// User is anonymous
+			return Optional.of("anonymous");
+		} else {
+			UserEntity userEntity = Optional.ofNullable((UserEntity) authentication.getPrincipal()).orElse(null);
+			return Optional.ofNullable(userEntity.getId().toString() + " - " + userEntity.getEmail());
+			// User is authenticated
+		}
 	}
 }

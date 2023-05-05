@@ -13,6 +13,7 @@ import java.util.Optional;
 public class TenantRequest {
 	String host;
 	String name;
+	String issuer;
 
 	public static List<TenantEntity> toEntity(List<TenantRequest> eventList) {
 		return Optional.ofNullable(eventList)
@@ -25,6 +26,7 @@ public class TenantRequest {
 		return Optional.ofNullable(event).map(e -> TenantEntity.builder()
 						.name(event.getName())
 						.host(event.getHost())
+						.issuer(event.getIssuer())
 						.build())
 				.orElse(null);
 	}

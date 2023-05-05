@@ -1,6 +1,5 @@
 package com.tickets.api.auth;
 
-import com.tickets.api.enums.Role;
 import com.tickets.api.exceptions.AuthenticationException;
 import com.tickets.api.model.UserProfile;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,10 +34,15 @@ public class Authorization {
 		return profile.getUserId();
 	}
 
-	public static void hasRole(HttpServletRequest request, Role role) {
+	public static void hasRole(HttpServletRequest request, String role) {
 		UserProfile profile = getProfile(request);
 		Optional.ofNullable(profile.getRoles()).orElseThrow(() -> new AuthenticationException("User does not have role " + role));
-		profile.getRoles().stream().filter(r -> r.equals(role)).findFirst().orElseThrow(() -> new AuthenticationException("User does not have role " + role));
 
+		Optional.ofNullable(profile.getRoles())
+				.orElseThrow(() -> new AuthenticationException("User does not have role " + role))
+				.stream()
+				.filter(r -> r.equals(role))
+				.findFirst()
+				.orElseThrow(() -> new AuthenticationException("User does not have role " + role));
 	}
 }
