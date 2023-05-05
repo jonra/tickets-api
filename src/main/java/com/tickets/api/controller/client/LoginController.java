@@ -1,12 +1,14 @@
 package com.tickets.api.controller.client;
 
-import com.tickets.api.model.LoginRequest;
-import com.tickets.api.service.AuthService;
-import com.tickets.api.service.LoginResponse;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import com.tickets.api.auth.AuthenticationRequest;
+import com.tickets.api.auth.AuthenticationResponse;
+import com.tickets.api.auth.RegisterRequest;
+import com.tickets.api.model.TenantResponse;
+import com.tickets.api.service.TenantService;
+import com.tickets.api.service.UserAuthenticationService;
+import com.tickets.api.service.UserProfileService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,15 +25,26 @@ import static org.springframework.http.ResponseEntity.ok;
 public class LoginController {
 
 	public static final String PATH = "v1/login";
-	private final AuthService authenticationService;
+	private final TenantService tenantService;
+	private final UserAuthenticationService authenticationService;
+	private final UserProfileService userService;
 
-	@Operation(description = "Login service" )
-	@ApiResponse(responseCode = "200", description = "Authenticated")
+
+	@PostMapping("/register")
+	public ResponseEntity<AuthenticationResponse> register(HttpServletRequest httpServletRequest, @RequestBody RegisterRequest request) {
+		String attribute = (String) httpServletRequest.getAttribute("clientHost");
+		TenantResponse tenantResponse = tenantService.getTenant(attribute);
+
+		AuthenticationResponse register = authenticationService.register(request, tenantResponse.getId());
+		return ResponseEntity.ok(register);
+	}
+
 	@PostMapping()
-	public ResponseEntity<LoginResponse> restrictions(@Valid @RequestBody LoginRequest loginRequest) {
+	public ResponseEntity<AuthenticationResponse> login(HttpServletRequest httpServletRequest, @RequestBody AuthenticationRequest request) {
+		String attribute = (String) httpServletRequest.getAttribute("clientHost");
+		TenantResponse tenantResponse = tenantService.getTenant(attribute);
 
-		LoginResponse loginResponse = authenticationService.login(loginRequest);
-		return ok(loginResponse);
+		return ResponseEntity.ok(authenticationService.authenticate(request, tenantResponse.getId()));
 	}
 
 
