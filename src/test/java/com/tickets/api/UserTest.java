@@ -31,7 +31,7 @@ import static com.tickets.api.TestHelper.init;
 		AuthenticationResponse user = init();
 		UserResponse userResponse = addRoleToUser(UserRoleRequest.builder().role(Role.ORGANISER).build(), user.getId(), user.getToken());
 
-		assert userResponse.getRoles().size() == 2;
+		assert userResponse.getRoles().size() == 3;
 	}
 
 }

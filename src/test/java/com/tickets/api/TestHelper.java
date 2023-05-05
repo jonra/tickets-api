@@ -124,6 +124,19 @@ public class TestHelper  {
 				.as(OrganiserResponse.class);
 	}
 
+	public static List<UserResponse> getUsersForOrganiser(String organiserId, String token) {
+		return given()
+				.auth()
+				.oauth2(token)
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.get(replacePlaceholders(OrganiserController.PATH + "/{organiserId}/users", organiserId))
+				.then()
+				.statusCode(200)
+				.extract()
+				.body().jsonPath()
+				.getList("", UserResponse.class);
+	}
+
 	public static EventResponse createEvent(EventRequest eventRequest, String organiserId, String token) {
 		return given()
 				.auth()

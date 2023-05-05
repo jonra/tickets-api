@@ -5,8 +5,10 @@ import com.tickets.api.enums.Role;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Builder
 @Data
@@ -18,6 +20,13 @@ public class UserResponse {
 	private Set<Role> roles;
 	private OrganiserResponse organiser;
 
+	public static List<UserResponse> fromEntity(List<UserEntity> userEntities) {
+		if (userEntities == null) {
+			return null;
+		}
+
+		return userEntities.stream().map(UserResponse::fromEntity).collect(Collectors.toList());
+	}
 	public static UserResponse fromEntity(UserEntity userEntity) {
 		return Optional.ofNullable(
 				userEntity

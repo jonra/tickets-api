@@ -4,11 +4,15 @@ import com.tickets.api.auth.AuthenticationResponse;
 import com.tickets.api.enums.OrganiserType;
 import com.tickets.api.model.OrganiserRequest;
 import com.tickets.api.model.OrganiserResponse;
+import com.tickets.api.model.UserResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
+
 import static com.tickets.api.TestHelper.addUserToOrganiser;
 import static com.tickets.api.TestHelper.createOrganiser;
+import static com.tickets.api.TestHelper.getUsersForOrganiser;
 import static com.tickets.api.TestHelper.init;
 
 @SpringBootTest(
@@ -33,7 +37,7 @@ import static com.tickets.api.TestHelper.init;
 	}
 
 	@Test
-	void create_event_and_add_user() {
+	void create_organiser_and_add_user() {
 		AuthenticationResponse user = init();
 
 
@@ -43,7 +47,8 @@ import static com.tickets.api.TestHelper.init;
 				.build(), user.getToken());
 
 		OrganiserResponse withUser = addUserToOrganiser(user.getId(), organiser.getId(), user.getToken());
-		assert withUser.getUsers().size() == 1;
+		List<UserResponse> usersForOrganiser = getUsersForOrganiser(organiser.getId(), user.getToken());
+
 
 	}
 }

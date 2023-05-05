@@ -3,6 +3,7 @@ package com.tickets.api.controller.organiser;
 import com.tickets.api.auth.Authorization;
 import com.tickets.api.model.OrganiserRequest;
 import com.tickets.api.model.OrganiserResponse;
+import com.tickets.api.model.UserResponse;
 import com.tickets.api.service.OrganiserService;
 import com.tickets.api.service.TenantService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -41,7 +44,7 @@ public class OrganiserController {
 		OrganiserResponse organiser = organiserService.createOrganiser(organiserUserRequest, tenantId);
 		// Add current user to organiser
 		organiserService.addUserToOrganiser(organiser.getId(), userId, tenantId);
-		return ResponseEntity.ok(organiser);
+		return ResponseEntity.ok(organiserService.getOrganiser(organiser.getId(), tenantId));
 	}
 
 	@Operation(description = "Get an organiser.")
@@ -52,11 +55,7 @@ public class OrganiserController {
 		String tenantId = Authorization.getTenantId(request);
 		String userId = Authorization.getUserId(request);
 
-
-
 		OrganiserResponse organiser = organiserService.getOrganiser(organiserId, tenantId);
-		// Add current user to organiser
-		organiserService.addUserToOrganiser(organiser.getId(), userId, tenantId);
 		return ResponseEntity.ok(organiser);
 	}
 
@@ -69,8 +68,19 @@ public class OrganiserController {
 
 		OrganiserResponse organiserResponse = organiserService.addUserToOrganiser(organiserId, userId, tenantId);
 
-		System.out.println("organiserResponse = " + organiserResponse.toJson());
 		return ResponseEntity.ok(organiserResponse);
+	}
+
+	@Operation(description = "Get users for organiser.")
+	@ApiResponse(responseCode = "200", description = "Event details")
+	@GetMapping("/{organiserId}/users")
+	public ResponseEntity<List<UserResponse>> getUsers(HttpServletRequest request, @PathVariable String organiserId) {
+		Authorization.isOrganiserId(request, organiserId);
+		String tenantId = Authorization.getTenantId(request);
+
+		List<UserResponse> users = organiserService.getUsersForOrganiser(organiserId, tenantId);
+
+		return ResponseEntity.ok(users);
 	}
 
 

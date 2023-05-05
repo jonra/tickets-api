@@ -28,6 +28,8 @@ public class OrganiserEntity extends BaseEntity {
 	@NotNull String name;
 	@Column
 	String description;
+
+	@Column
 	@Enumerated(EnumType.STRING)
 	@NotNull OrganiserType type;
 
