@@ -1,11 +1,11 @@
 package com.tickets.api;
 
-import com.tickets.api.auth.AuthenticationController;
 import com.tickets.api.auth.AuthenticationRequest;
 import com.tickets.api.auth.AuthenticationResponse;
 import com.tickets.api.auth.RegisterRequest;
 import com.tickets.api.controller.admin.CountryController;
 import com.tickets.api.controller.admin.TenantController;
+import com.tickets.api.controller.client.LoginController;
 import com.tickets.api.controller.client.UserController;
 import com.tickets.api.controller.organiser.EventController;
 import com.tickets.api.controller.organiser.ExtraController;
@@ -143,6 +143,19 @@ public class TestHelper  {
 				.as(TicketResponse.class);
 	}
 
+	public static TicketResponse mergeTicket(TicketRequest ticketRequest, String organiserId, String eventId, String ticketId, String token) {
+		return given()
+				.auth()
+				.oauth2(token)
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.body(ticketRequest)
+				.patch(replacePlaceholders(TicketController.PATH + "/{ticketId}", organiserId, eventId, ticketId))
+				.then()
+				.statusCode(200)
+				.extract()
+				.as(TicketResponse.class);
+	}
+
 	public static TicketResponse addExtraTicket(String organiserId, String eventId, String ticketId, String extraId, String token) {
 		return given()
 				.auth()
@@ -187,7 +200,7 @@ public class TestHelper  {
 		return given()
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.body(userRequest)
-				.post(AuthenticationController.PATH + "/register")
+				.post(LoginController.PATH + "/register")
 				.then()
 				.statusCode(200)
 				.extract()
@@ -198,7 +211,7 @@ public class TestHelper  {
 		return given()
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.body(userRequest)
-				.post(AuthenticationController.PATH + "/authentication")
+				.post(LoginController.PATH)
 				.then()
 				.statusCode(200)
 				.extract()

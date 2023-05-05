@@ -4,5 +4,6 @@ public enum OrganiserType {
 	ORGANISER,
 	ARTIST,
 	SPORTS_TEAM,
+	FESTIVAL,
 	OTHER
 }

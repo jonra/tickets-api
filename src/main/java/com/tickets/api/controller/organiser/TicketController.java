@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -38,6 +39,18 @@ public class TicketController {
 		String tenantId = Authorization.getTenantId(request);
 
 		TicketResponse ticket = ticketService.createTicket(ticketRequest, organiserId, eventId, tenantId);
+
+		return ResponseEntity.ok(ticket);
+	}
+
+	@Operation(description = "Create a new ticket.")
+	@ApiResponse(responseCode = "200", description = "Ticket details")
+	@PatchMapping("/{ticketId}")
+	public ResponseEntity<TicketResponse> updateTicket(HttpServletRequest request, @RequestBody TicketRequest ticketRequest, @PathVariable String organiserId, @PathVariable String eventId, @PathVariable String ticketId) {
+		Authorization.isOrganiserId(request, organiserId);
+		String tenantId = Authorization.getTenantId(request);
+
+		TicketResponse ticket = ticketService.mergeTicket(ticketRequest, organiserId, eventId, ticketId, tenantId);
 
 		return ResponseEntity.ok(ticket);
 	}

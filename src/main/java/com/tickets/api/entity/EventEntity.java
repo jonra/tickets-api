@@ -34,6 +34,8 @@ public class EventEntity extends BaseEntity {
 	@Column
 	String location;
 	@Column
+	String directions;
+	@Column
 	Date startDate;
 	@Column
 	Date endDate;

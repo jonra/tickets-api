@@ -79,7 +79,7 @@ import static com.tickets.api.TestHelper.init;
 
 		TicketRequest ticketRequest = TicketRequest.builder()
 				.name("test ticket")
-				.type(TicketType.DAY)
+				.ticketType(TicketType.DAY)
 				.build();
 		TicketResponse ticket = createTicket(ticketRequest, organiser.getId(), event.getId(), user.getToken());
 

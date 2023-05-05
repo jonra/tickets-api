@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -60,4 +61,25 @@ public class TicketService {
 		return getTicket(ticket.getId().toString(), tenantId);
 	}
 
+	public TicketResponse mergeTicket(TicketRequest ticketRequest, String organiserId, String eventId, String ticketId, String tenantId) {
+		EventEntity eventEntity = eventRepository.findByIdAndTenantIdAndOrganiserId(UUID.fromString(eventId), tenantId, UUID.fromString(organiserId))
+				.orElseThrow(() -> new EntityNotFoundException("Event not found"));
+
+		TicketEntity ticketEntity = ticketRepository.findByIdAndTenantId(UUID.fromString(ticketId), tenantId)
+				.orElseThrow(() -> new EntityNotFoundException("Ticket not found"));
+
+		Optional.ofNullable(ticketRequest.getName()).ifPresent(ticketEntity::setName);
+		Optional.ofNullable(ticketRequest.getTicketType()).ifPresent(ticketEntity::setTicketType);
+		Optional.ofNullable(ticketRequest.getNumberOfTickets()).ifPresent(ticketEntity::setNumberOfTickets);
+		Optional.ofNullable(ticketRequest.getEndTime()).ifPresent(ticketEntity::setEndTime);
+		Optional.ofNullable(ticketRequest.getStartTime()).ifPresent(ticketEntity::setStartTime);
+		Optional.ofNullable(ticketRequest.getConcessionType()).ifPresent(ticketEntity::setConcessionType);
+		Optional.ofNullable(ticketRequest.getPrice()).ifPresent(ticketEntity::setPrice);
+
+
+		TicketEntity save = ticketRepository.save(ticketEntity);
+		eventEntity.getTickets().add(save);
+
+		return TicketResponse.fromEntity(save);
+	}
 }

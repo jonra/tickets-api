@@ -12,10 +12,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Builder
@@ -23,7 +21,6 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class OrganiserEntity extends BaseEntity {
 	@Column
 	@NotNull String tenantId;
@@ -31,12 +28,6 @@ public class OrganiserEntity extends BaseEntity {
 	@NotNull String name;
 	@Column
 	String description;
-	@Column
-	String location;
-	@Column
-	Date startDate;
-	@Column
-	Date endDate;
 	@Enumerated(EnumType.STRING)
 	@NotNull OrganiserType type;
 

@@ -37,7 +37,7 @@ public class UserAuthenticationService {
             throw new UserAlreadyExistException("User already exists");
         } else {
             Set<Role> roles = null;
-            if (request.getIsOrganiser()) {
+            if (request.isOrganiser()) {
                 roles = Set.of(Role.ORGANISER);
             } else {
                 roles = Set.of(Role.USER);
