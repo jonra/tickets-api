@@ -29,6 +29,8 @@ public class SecurityConfiguration {
 //                .requestMatchers("/api/v1/home/**").hasAuthority("ADMIN")
                 .requestMatchers("/v1/auth/**").permitAll()
                 .requestMatchers("/v1/tenants/**").permitAll()
+                .requestMatchers("/swagger-ui/**").permitAll()
+                .requestMatchers("/v3/api-docs/**").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
