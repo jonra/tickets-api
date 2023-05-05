@@ -43,7 +43,7 @@ public class TicketRequest {
 						.concessionType(ticket.getConcessionType())
 						.startTime(ticket.getStartTime())
 						.endTime(ticket.getEndTime())
-						.numberOfTickets(ticket.getNumberOfTickets())
+						.stock(ticket.getNumberOfTickets())
 						.price(ticket.getPrice())
 						.tenantId(tenantId)
 						.build())

@@ -47,18 +47,26 @@ import static com.tickets.api.TestHelper.init;
 		ExtraRequest extraRequest = ExtraRequest.builder()
 				.name("test extra")
 				.type(ExtraType.ACCOMMODATION)
+				.stock(10)
+				.price(BigDecimal.valueOf(100))
+				.maxSelect(2)
 				.build();
 
 		ExtraResponse extra = createExtra(extraRequest, organiser.getId(), user.getToken());
 		assert extra.getId() != null;
 		assert extra.getName().equals(extraRequest.getName());
 		assert extra.getType().equals(extraRequest.getType());
+		assert extra.getStock().equals(extraRequest.getStock());
+		assert extra.getPrice().equals(extraRequest.getPrice());
+
 
 		List<ExtraResponse> extras = getExtras(organiser.getId(), user.getToken());
 		assert extras.size() == 1;
 		assert extras.get(0).getId().equals(extra.getId());
 		assert extras.get(0).getName().equals(extra.getName());
 		assert extras.get(0).getType().equals(extra.getType());
+		assert extras.get(0).getStock().equals(extra.getStock());
+		assert extras.get(0).getPrice().intValue() == extra.getPrice().intValue();
 
 	}
 

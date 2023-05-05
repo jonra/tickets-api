@@ -11,9 +11,11 @@ import java.math.BigDecimal;
 @Data
 
 public class ExtraRequest {
-	String name;
-	BigDecimal price;
-	ExtraType type;
+	private String name;
+	private BigDecimal price;
+	private ExtraType type;
+	private Integer stock;
+	private Integer maxSelect;
 
 	public static ExtraEntity toEntity(ExtraRequest extraRequest, String tenantId) {
 		if (extraRequest == null) {
@@ -25,6 +27,9 @@ public class ExtraRequest {
 				.price(extraRequest.getPrice())
 				.type(extraRequest.getType())
 				.tenantId(tenantId)
+				.stock(extraRequest.getStock())
+				.maxSelect(extraRequest.getMaxSelect())
+				.price(extraRequest.getPrice())
 				.build();
 	}
 }

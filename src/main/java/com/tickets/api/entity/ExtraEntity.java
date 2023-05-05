@@ -34,6 +34,10 @@ public class ExtraEntity extends BaseEntity {
 	ExtraType type;
 	@Column
 	String tenantId;
+	@Column
+	private Integer stock;
+	@Column
+	private Integer maxSelect;
 
 	@ManyToOne
 	private EventEntity event;

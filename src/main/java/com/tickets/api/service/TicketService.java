@@ -70,7 +70,7 @@ public class TicketService {
 
 		Optional.ofNullable(ticketRequest.getName()).ifPresent(ticketEntity::setName);
 		Optional.ofNullable(ticketRequest.getTicketType()).ifPresent(ticketEntity::setTicketType);
-		Optional.ofNullable(ticketRequest.getNumberOfTickets()).ifPresent(ticketEntity::setNumberOfTickets);
+		Optional.ofNullable(ticketRequest.getNumberOfTickets()).ifPresent(ticketEntity::setStock);
 		Optional.ofNullable(ticketRequest.getEndTime()).ifPresent(ticketEntity::setEndTime);
 		Optional.ofNullable(ticketRequest.getStartTime()).ifPresent(ticketEntity::setStartTime);
 		Optional.ofNullable(ticketRequest.getConcessionType()).ifPresent(ticketEntity::setConcessionType);

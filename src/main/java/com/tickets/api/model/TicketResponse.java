@@ -31,7 +31,7 @@ public class TicketResponse {
 				.concessionType(entity.getConcessionType())
 				.startTime(entity.getStartTime())
 				.endTime(entity.getEndTime())
-				.numberOfTickets(entity.getNumberOfTickets())
+				.numberOfTickets(entity.getStock())
 				.price(entity.getPrice())
 				.extras(ExtraResponse.fromEntity(entity.getExtras()))
 				.build();

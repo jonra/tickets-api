@@ -42,7 +42,7 @@ public class TicketEntity extends BaseEntity {
 	@Column
 	private LocalDateTime endTime;
 	@Column
-	private Integer numberOfTickets;
+	private Integer stock;
 	@Column
 	private BigDecimal price;
 

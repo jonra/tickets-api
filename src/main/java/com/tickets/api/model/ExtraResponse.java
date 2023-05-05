@@ -11,11 +11,12 @@ import java.util.List;
 @Data
 @Builder
 public class ExtraResponse {
-	String id;
-	String name;
-	BigDecimal price;
-	ExtraType type;
-
+	private String id;
+	private String name;
+	private BigDecimal price;
+	private ExtraType type;
+	private Integer stock;
+	private Integer maxSelect;
 	public static List<ExtraResponse> fromEntity(List<ExtraEntity> entities) {
 		if (entities == null) {
 			return null;
@@ -36,6 +37,8 @@ public class ExtraResponse {
 				.name(entity.getName())
 				.type(entity.getType())
 				.price(entity.getPrice())
+				.stock(entity.getStock())
+				.maxSelect(entity.getMaxSelect())
 				.build();
 	}
 }
