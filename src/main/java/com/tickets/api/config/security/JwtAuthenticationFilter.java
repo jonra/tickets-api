@@ -54,7 +54,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         userEmail = jwtService.extractUsername(jwt);
 
         if(userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
+            String clientHost = request.getRemoteHost();
+            TenantResponse tenantResponse = tenantService.getTenant(clientHost);
+
+            UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail + "|" + tenantResponse.getId());
             if(jwtService.isTokenValid(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities()
@@ -63,8 +66,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         new WebAuthenticationDetailsSource().buildDetails(request)
                 );
 
-                String clientHost = request.getRemoteHost();
-                TenantResponse tenantResponse = tenantService.getTenant(clientHost);
                 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
                 List<String> jwtRoles = jwtService.extractRoles(jwt);

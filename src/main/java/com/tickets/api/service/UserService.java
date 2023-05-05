@@ -14,8 +14,9 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByEmail(username);
+    public UserDetails loadUserByUsername(String usernameAndTenant) throws UsernameNotFoundException {
+        String[] split = usernameAndTenant.split("\\|");
+        return userRepository.findByEmailAndTenantId(split[0], split[1]);
     }
 
     public UserEntity findByEmail(String email) {

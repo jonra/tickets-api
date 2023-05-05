@@ -67,7 +67,7 @@ public class UserAuthenticationService {
 
     public AuthenticationResponse authenticate(AuthenticationRequest request, String tenantId) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+                new UsernamePasswordAuthenticationToken(request.getEmail() + "|" + tenantId, request.getPassword())
         );
 
         UserEntity userEntity = userService.findByEmail(request.getEmail());
